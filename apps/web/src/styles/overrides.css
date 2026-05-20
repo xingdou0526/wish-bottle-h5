@@ -1,0 +1,94 @@
+/* ============================================================
+   面向移动端部署的全局覆盖：
+   - 去掉 iOS phone-shell 的视觉装饰（圆角 / 阴影 / 双层边框）
+   - 去掉模拟状态栏 / Home indicator 占位
+   - 让 auth-stage / view 占满整屏
+============================================================ */
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--cream);
+}
+
+body {
+  /* 原 body 是 flex 居中手机壳；现在直接让 phone-shell 平铺 */
+  display: block;
+  background: transparent;
+}
+
+.page-bg { display: none !important; }
+
+.phone-shell {
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;        /* 处理移动端浏览器地址栏 */
+  max-height: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.status-bar,
+.home-bar { display: none !important; }
+
+/* auth-stage 原本从 status-bar 之下开始，现在让它从顶部开始 */
+.auth-stage {
+  inset: 0 !important;
+  padding-top: env(safe-area-inset-top, 12px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 18px) !important;
+}
+
+/* main 同理 */
+.phone-shell > main {
+  padding-bottom: env(safe-area-inset-bottom, 12px);
+}
+
+/* topbar 留出顶部安全区 */
+.topbar {
+  padding-top: calc(env(safe-area-inset-top, 8px) + 8px) !important;
+}
+
+/* topbar tab 用 NavLink 渲染为 <a>，去掉下划线 & 防换行 */
+.tabs .tab {
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Sheet 拆分布局：内容区独立滚动 + 底部操作区固定 + 隐藏滚动条
+============================================================ */
+
+.sheet.sheet-split {
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;             /* 外层不再滚动 */
+  padding: 14px 0 0 !important;            /* 还原内边距由内部接管 */
+}
+
+.sheet.sheet-split .sheet-handle {
+  margin: 0 auto 8px;
+  flex-shrink: 0;
+}
+
+.sheet.sheet-split .sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 16px 8px;
+  /* 隐藏滚动条但保留滚动能力 */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/旧版 Edge */
+}
+.sheet.sheet-split .sheet-body::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari/Edge */
+}
+
+.sheet.sheet-split .sheet-footer {
+  flex-shrink: 0;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 16px) + 12px);
+  background: linear-gradient(180deg, rgba(251, 246, 236, 0) 0%, var(--cream-2) 22%);
+  border-top: 1px dashed rgba(180, 140, 90, 0.25);
+}
+.sheet.sheet-split .sheet-footer .sheet-actions {
+  margin-top: 0;
+}

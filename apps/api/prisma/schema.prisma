@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  nickname     String
+  birthday     String?
+  signature    String?
+  avatar       String
+  createdAt    DateTime @default(now())
+
+  wishesOwned     Wish[] @relation("WishOwner")
+  wishesReceived  Wish[] @relation("WishRecipient")
+  wishesAssigned  Wish[] @relation("WishAssignee")
+  friendshipsA    Friendship[] @relation("FriendA")
+  friendshipsB    Friendship[] @relation("FriendB")
+  invitesSent     Invite[] @relation("InviteFrom")
+  invitesReceived Invite[] @relation("InviteTo")
+}
+
+model Wish {
+  id          String    @id @default(cuid())
+  ownerId     String
+  recipientId String?
+  assigneeId  String?
+  text        String    @db.VarChar(140)
+  color       Int
+  sticker     String?
+  sealOpt     String
+  sealUntil   DateTime?
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  note        String?   @db.VarChar(200)
+  createdAt   DateTime  @default(now())
+
+  owner     User  @relation("WishOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  recipient User? @relation("WishRecipient", fields: [recipientId], references: [id])
+  assignee  User? @relation("WishAssignee", fields: [assigneeId], references: [id])
+
+  @@index([ownerId])
+  @@index([recipientId])
+  @@index([assigneeId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userAId   String
+  userBId   String
+  createdAt DateTime @default(now())
+
+  userA User @relation("FriendA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+}
+
+model Invite {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toEmail    String
+  toUserId   String?
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  from User  @relation("InviteFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  to   User? @relation("InviteTo",   fields: [toUserId],   references: [id])
+
+  @@index([toEmail])
+  @@index([toUserId])
+}

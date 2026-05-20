@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>愿望瓶</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Long+Cang&family=Noto+Serif+SC:wght@400;500;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles-v1-夜空.css">
+</head>
+<body>
+  <!-- Outer page (for desktop preview) -->
+  <div class="page-bg" aria-hidden="true"></div>
+
+  <!-- The H5 phone shell -->
+  <div class="phone-shell" id="phone-shell">
+    <!-- Status bar (mock iOS) -->
+    <div class="status-bar" aria-hidden="true">
+      <span class="sb-time" id="sb-time">9:41</span>
+      <span class="sb-notch"></span>
+      <span class="sb-right">
+        <svg viewBox="0 0 18 12" width="17" height="11"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="5" y="6" width="3" height="6" rx="0.6"/><rect x="10" y="3" width="3" height="9" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6"/></g></svg>
+        <svg viewBox="0 0 16 12" width="15" height="11"><path d="M8 11 Q4 7 1.5 5 A9 9 0 0 1 14.5 5 Q12 7 8 11 Z M8 3.5 A2.4 2.4 0 0 1 10.4 5.9 Q9.2 7 8 8.2 Q6.8 7 5.6 5.9 A2.4 2.4 0 0 1 8 3.5 Z" fill="currentColor"/></svg>
+        <span class="sb-batt"><span class="sb-batt-fill"></span></span>
+      </span>
+    </div>
+
+    <!-- Ambient background INSIDE the phone -->
+    <div class="bg-stars" aria-hidden="true"></div>
+    <canvas class="meteor-canvas" id="meteor-canvas" aria-hidden="true"></canvas>
+    <canvas class="sky-stars-canvas" id="sky-stars-canvas" aria-hidden="true"></canvas>
+    <div class="bg-moon" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">✦</span>
+        <span class="brand-name">愿望瓶</span>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="bottle" role="tab">瓶子</button>
+        <button class="tab" data-view="mine" role="tab">我的</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ============ 瓶子页 ============ -->
+      <section id="bottle-view" class="view active">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <svg class="bottle-svg" viewBox="0 0 800 760" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <linearGradient id="glass-body" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"  stop-color="rgba(255,255,255,0.02)"/>
+                  <stop offset="14%" stop-color="rgba(255,255,255,0.18)"/>
+                  <stop offset="32%" stop-color="rgba(255,255,255,0.04)"/>
+                  <stop offset="62%" stop-color="rgba(255,255,255,0.02)"/>
+                  <stop offset="82%" stop-color="rgba(255,255,255,0.14)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.03)"/>
+                </linearGradient>
+                <linearGradient id="glass-shade" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(20,8,40,0)"/>
+                  <stop offset="80%" stop-color="rgba(20,8,40,0.18)"/>
+                  <stop offset="100%" stop-color="rgba(20,8,40,0.32)"/>
+                </linearGradient>
+                <radialGradient id="bottle-shadow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(0,0,0,0.45)"/>
+                  <stop offset="60%" stop-color="rgba(0,0,0,0.18)"/>
+                  <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                </radialGradient>
+                <linearGradient id="rim-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.10)"/>
+                </linearGradient>
+              </defs>
+
+              <ellipse cx="400" cy="710" rx="220" ry="22" fill="url(#bottle-shadow)"/>
+
+              <g id="bottle-group">
+                <path id="bottle-shape"
+                  d="M 246 142
+                     L 246 130
+                     Q 246 118, 258 116
+                     L 542 116
+                     Q 554 118, 554 130
+                     L 554 142
+                     L 590 210
+                     L 590 600
+                     Q 590 686, 504 686
+                     L 296 686
+                     Q 210 686, 210 600
+                     L 210 210
+                     Z"
+                  fill="url(#glass-body)"
+                  stroke="rgba(255,255,255,0.32)"
+                  stroke-width="1.6"
+                />
+                <path
+                  d="M 246 142 L 590 210 L 590 600 Q 590 686, 504 686 L 296 686 Q 210 686, 210 600 L 210 210 L 554 142 Z"
+                  fill="url(#glass-shade)"
+                  opacity="0.6"
+                />
+                <ellipse cx="400" cy="116" rx="148" ry="12" fill="url(#rim-grad)" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+                <ellipse cx="400" cy="124" rx="148" ry="6" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+
+                <path d="M 248 220 Q 240 420, 252 600" stroke="rgba(255,255,255,0.32)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                <path d="M 260 240 Q 254 420, 264 580" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M 552 230 Q 560 420, 548 600" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+                <g id="tag">
+                  <ellipse cx="400" cy="116" rx="155" ry="4" fill="none" stroke="rgba(210,180,140,0.55)" stroke-width="1.5" stroke-dasharray="2 2"/>
+                  <line x1="540" y1="116" x2="572" y2="156" stroke="rgba(210,180,140,0.65)" stroke-width="1.2"/>
+                  <g transform="translate(572 156) rotate(8)">
+                    <path d="M 0 0 L 36 0 L 42 8 L 36 16 L 0 16 Z" fill="#f3e6c8" stroke="rgba(120,90,40,0.4)" stroke-width="0.8"/>
+                    <text x="6" y="11.5" font-family="Long Cang, Noto Serif SC, serif" font-size="9" fill="rgba(90,60,30,0.85)">願</text>
+                  </g>
+                </g>
+              </g>
+            </svg>
+
+            <canvas class="stars-canvas" id="stars-canvas" width="800" height="760"></canvas>
+            <div class="bottle-glow" aria-hidden="true"></div>
+          </div>
+
+          <p class="hint">用手指划过瓶子里 · 星星会跟着晃</p>
+
+          <div class="actions">
+            <button class="btn btn-ghost" id="btn-shake">
+              <span class="btn-ico">✦</span>
+              <span>摇一摇</span>
+            </button>
+            <button class="btn btn-primary" id="btn-wish">
+              <span class="btn-ico">✎</span>
+              <span>许个愿</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 我的页 ============ -->
+      <section id="mine-view" class="view">
+        <div class="mine-head">
+          <h2>许过的愿</h2>
+          <p class="mine-sub">每一颗星星都是一个未来</p>
+        </div>
+        <div class="sub-tabs" role="tablist">
+          <button class="sub-tab active" data-status="pending" role="tab">未实现 <span class="count" id="count-pending">0</span></button>
+          <button class="sub-tab" data-status="sealed" role="tab">未拆封 <span class="count" id="count-sealed">0</span></button>
+          <button class="sub-tab" data-status="done" role="tab">已成真 <span class="count" id="count-done">0</span></button>
+        </div>
+        <div class="wish-list" id="wish-list"></div>
+        <div class="empty" id="wish-empty" hidden>
+          <div class="empty-ico">✦</div>
+          <p>还没有许过愿哦</p>
+          <p class="empty-sub">回到瓶子页面 · 把心愿投进去吧</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Home indicator -->
+    <div class="home-bar" aria-hidden="true"></div>
+  </div>
+
+  <!-- ============ 许愿弹窗 (bottom sheet) ============ -->
+  <div class="sheet-modal" id="wish-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-write" role="dialog" aria-modal="true">
+        <div class="letter-stamp">
+          <div class="stamp-inner">
+            <span class="stamp-zh">願</span>
+            <span class="stamp-en">WISH</span>
+          </div>
+        </div>
+        <div class="letter-header">
+          <span class="letter-date" id="letter-date">—</span>
+          <span class="letter-title">亲爱的自己</span>
+        </div>
+        <div class="letter-lined">
+          <textarea
+            id="wish-input"
+            class="letter-input"
+            maxlength="140"
+            placeholder="我希望……"
+          ></textarea>
+          <div class="char-count"><span id="char-count">0</span> / 140</div>
+        </div>
+        <!-- Time-seal picker -->
+        <div class="seal-picker" id="seal-picker">
+          <div class="seal-picker-label">
+            <span class="sp-icon">✦</span>
+            <span>寄给</span>
+          </div>
+          <div class="seal-chips" role="radiogroup">
+            <button class="seal-chip active" data-seal="now" type="button">现在</button>
+            <button class="seal-chip" data-seal="1m" type="button">一个月后</button>
+            <button class="seal-chip" data-seal="3m" type="button">三个月后</button>
+            <button class="seal-chip" data-seal="6m" type="button">半年后</button>
+            <button class="seal-chip" data-seal="1y" type="button">一年后</button>
+            <button class="seal-chip" data-seal="newyear" type="button">下一个新年</button>
+            <button class="seal-chip" data-seal="birthday" type="button">下一个生日</button>
+            <button class="seal-chip" data-seal="custom" type="button">自定义</button>
+          </div>
+          <div class="seal-extras" id="seal-extras" hidden>
+            <div class="seal-extra-row" id="seal-extra-custom" hidden>
+              <label>多少天后开启？</label>
+              <input type="number" id="seal-custom-days" min="1" max="3650" placeholder="天数" />
+            </div>
+            <div class="seal-extra-row" id="seal-extra-birthday" hidden>
+              <label>你的生日 (MM-DD)</label>
+              <input type="text" id="seal-birthday-input" placeholder="例如 06-15" maxlength="5" />
+            </div>
+          </div>
+          <div class="seal-hint" id="seal-hint">立即可见</div>
+        </div>
+        <div class="letter-footer">
+          <span class="signature">— 致未来的我</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-cancel">放下</button>
+        <button class="btn btn-primary" id="btn-confirm">投进瓶子 ✦</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 抽中愿望弹窗 ============ -->
+  <div class="sheet-modal" id="show-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-show" role="dialog" aria-modal="true">
+        <div class="letter-stamp letter-stamp-soft">
+          <div class="stamp-inner">
+            <span class="stamp-zh">緣</span>
+            <span class="stamp-en">FATE</span>
+          </div>
+        </div>
+        <div class="letter-header">
+          <span class="letter-date" id="show-date">—</span>
+          <span class="letter-title">来自瓶中的回信</span>
+        </div>
+        <div class="letter-lined">
+          <div class="letter-show-text" id="show-text">…</div>
+          <div class="letter-sealed-banner" id="show-sealed-banner" hidden>
+            <div class="lsb-icon">✦</div>
+            <div class="lsb-main">
+              <div class="lsb-label">未拆封 · 时间封印中</div>
+              <div class="lsb-countdown" id="show-countdown">还有 — · 于 — 开启</div>
+            </div>
+          </div>
+          <div class="letter-note-section" id="show-note-section" hidden>
+            <div class="note-divider"><span>· 实现的故事 ·</span></div>
+            <div class="letter-note" id="show-note"></div>
+            <div class="letter-note-date" id="show-note-date"></div>
+          </div>
+        </div>
+        <div class="letter-footer">
+          <span class="signature" id="show-status">— 还在等待中</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-show-close">放回瓶中</button>
+        <button class="btn btn-primary" id="btn-show-done">已成真 ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 完成备注弹窗 ============ -->
+  <div class="sheet-modal" id="done-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-note-write" role="dialog" aria-modal="true">
+        <div class="letter-stamp letter-stamp-done">
+          <div class="stamp-inner">
+            <span class="stamp-zh">圓</span>
+            <span class="stamp-en">DONE</span>
+          </div>
+        </div>
+        <div class="letter-header">
+          <span class="letter-date" id="done-date">—</span>
+          <span class="letter-title">愿望成真了</span>
+        </div>
+        <div class="note-original">
+          <span class="note-original-label">当时的愿望：</span>
+          <span class="note-original-text" id="done-original">—</span>
+        </div>
+        <div class="letter-lined">
+          <textarea
+            id="done-note-input"
+            class="letter-input letter-input-sm"
+            maxlength="200"
+            placeholder="它是怎么实现的？想留点什么给未来的自己看……"
+          ></textarea>
+          <div class="char-count"><span id="done-char-count">0</span> / 200</div>
+        </div>
+        <div class="letter-footer">
+          <span class="signature">— 此刻的我</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-done-skip">先跳过</button>
+        <button class="btn btn-primary" id="btn-done-save">把这一刻收好 ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Matter.js + GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="physics-v1-夜空.js"></script>
+  <script src="meteors-v1-夜空.js"></script>
+  <script src="app-v1-夜空.js"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks.jsx"></script>
+</body>
+</html>

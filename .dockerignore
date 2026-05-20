@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+**/.vite
+**/.turbo
+*.log
+.git
+.claude
+apps/api/.env
+apps/web/.env
+愿望瓶

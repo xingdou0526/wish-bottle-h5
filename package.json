@@ -1,0 +1,16 @@
+{
+  "name": "wishbottle",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.33.3",
+  "scripts": {
+    "dev:web": "pnpm --filter @wishbottle/web dev",
+    "dev:api": "pnpm --filter @wishbottle/api start:dev",
+    "build": "pnpm -r build",
+    "prisma:migrate": "pnpm --filter @wishbottle/api prisma migrate dev",
+    "prisma:seed": "pnpm --filter @wishbottle/api prisma db seed"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

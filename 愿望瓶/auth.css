@@ -1,0 +1,815 @@
+/* ============================================================
+   愿望瓶 — 登录 / 注册 / 好友 · 手账信封风
+============================================================ */
+
+/* ============ 全局：app 锁屏（未登录隐藏主界面）============ */
+body.auth-locked .topbar,
+body.auth-locked main,
+body.auth-locked .home-bar { display: none !important; }
+body.auth-locked .paper-decor,
+body.auth-locked .paper-grid { opacity: 0.45; }
+
+/* ============ Auth stage 容器 ============ */
+.auth-stage {
+  position: absolute;
+  inset: 44px 0 0 0;
+  z-index: 50;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 8px 18px 28px;
+  -webkit-overflow-scrolling: touch;
+}
+body.auth-locked .auth-stage { display: flex; }
+
+.auth-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+}
+.auth-screen.active { display: flex; }
+
+/* ============ 欢迎页 ============ */
+.welcome-brand {
+  text-align: center;
+  padding: 18px 0 8px;
+}
+.welcome-brand .wb-mark {
+  font-family: var(--font-zh-brush);
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+}
+.welcome-brand .wb-mark::first-letter { color: var(--pink-dd); }
+.welcome-brand .wb-en {
+  font-family: var(--font-en-hand);
+  font-size: 28px;
+  color: var(--ink-soft);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.welcome-brand .wb-sub {
+  font-family: var(--font-zh-hand);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* Mini decorative bottle illustration */
+.welcome-bottle {
+  position: relative;
+  width: 220px;
+  height: 240px;
+  margin: 8px auto 4px;
+}
+.welcome-bottle svg { width: 100%; height: 100%; }
+.welcome-bottle::before {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -8px;
+  transform: translateX(-50%);
+  width: 160px; height: 16px;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(120, 90, 50, 0.22), transparent 70%);
+  z-index: 0;
+}
+
+/* Quote / tagline card (sticky note) */
+.welcome-quote {
+  position: relative;
+  margin: 10px auto 16px;
+  padding: 14px 18px 12px;
+  width: 86%;
+  background: var(--paper);
+  border: 1.2px solid rgba(180, 140, 90, 0.30);
+  border-radius: 4px;
+  box-shadow: 2px 4px 0 rgba(180, 140, 90, 0.15);
+  transform: rotate(-1.5deg);
+  text-align: center;
+  font-family: var(--font-zh-hand);
+  font-size: 14px;
+  letter-spacing: 0.10em;
+  color: var(--ink);
+  line-height: 24px;
+}
+.welcome-quote::before {
+  content: "";
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
+  width: 60px; height: 14px;
+  background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,0.55) 5px 10px), var(--yellow);
+  opacity: 0.85;
+  border-radius: 1px;
+}
+.welcome-quote .wq-en {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-en-hand);
+  font-size: 15px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+/* Welcome buttons */
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 86%;
+  margin: 14px auto 8px;
+}
+.welcome-actions .btn { padding: 15px 18px; font-size: 16px; }
+.welcome-foot {
+  font-family: var(--font-en-hand);
+  font-size: 15px;
+  color: var(--ink-light);
+  letter-spacing: 0.04em;
+  margin-top: 14px;
+}
+.welcome-foot ✿ { color: var(--pink-dd); }
+
+/* ============ 信封式登录/注册 ============ */
+.auth-envelope-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+}
+.auth-back {
+  align-self: flex-start;
+  appearance: none; border: 0; cursor: pointer;
+  background: var(--paper);
+  border: 1.2px dashed var(--ink-light);
+  border-radius: 999px;
+  font-family: var(--font-zh-hand);
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  padding: 5px 14px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auth-title {
+  text-align: center;
+  margin: 4px 0 10px;
+  line-height: 1.2;
+}
+.auth-title h2 {
+  font-family: var(--font-zh-brush);
+  font-size: 28px;
+  letter-spacing: 0.20em;
+  color: var(--ink);
+  font-weight: 400;
+  margin: 0;
+}
+.auth-title .at-en {
+  display: block;
+  font-family: var(--font-en-hand);
+  font-size: 17px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+/* Envelope frame holding the letter */
+.auth-envelope {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  padding: 32px 16px 22px;
+  margin-top: 4px;
+  background:
+    repeating-linear-gradient(135deg, rgba(180, 140, 90, 0.08) 0 8px, transparent 8px 20px),
+    linear-gradient(135deg, #f0d9a8 0%, #e6c896 100%);
+  border: 1.5px solid #b89568;
+  border-radius: 4px;
+  box-shadow: 3px 6px 0 rgba(120, 90, 50, 0.20), 0 18px 36px rgba(120, 90, 50, 0.22);
+}
+
+/* Tiny envelope flap visual on top */
+.auth-envelope::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: 16px; right: 16px;
+  height: 24px;
+  background: linear-gradient(135deg, #e8cf9b 0%, #d4b478 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-bottom: 1px solid rgba(120, 90, 50, 0.20);
+  z-index: 1;
+}
+
+/* Wax seal corner */
+.auth-wax {
+  position: absolute;
+  top: -16px; right: -8px;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8a8a 0%, #d04050 50%, #8a1a28 100%);
+  display: grid; place-items: center;
+  font-family: var(--font-zh-brush);
+  font-size: 22px;
+  color: #fff5e0;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.30);
+  box-shadow:
+    inset -3px -4px 6px rgba(80, 10, 18, 0.55),
+    inset 2px 2px 4px rgba(255, 200, 180, 0.40),
+    0 4px 10px rgba(140, 30, 40, 0.40);
+  transform: rotate(-8deg);
+  z-index: 4;
+}
+.auth-wax::before {
+  content: ""; position: absolute; inset: 4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 245, 224, 0.45);
+}
+
+/* The actual paper "letter" inside */
+.auth-letter {
+  position: relative;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 26px, var(--paper-line) 26px 27px),
+    var(--paper);
+  border: 1.2px solid rgba(180, 140, 90, 0.30);
+  border-radius: 3px;
+  padding: 22px 18px 18px;
+  box-shadow: 2px 4px 0 rgba(180, 140, 90, 0.18), 0 8px 20px rgba(120, 90, 50, 0.12);
+  z-index: 2;
+}
+.auth-letter .letter-tape {
+  position: absolute;
+  top: -8px;
+  width: 56px; height: 16px;
+  opacity: 0.88;
+  border-radius: 1px;
+  box-shadow: 0 2px 4px rgba(120, 90, 50, 0.10);
+}
+.auth-letter .letter-tape-l { left: 12px; transform: rotate(-6deg); background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,0.55) 5px 10px), var(--pink); }
+.auth-letter .letter-tape-r { right: 12px; transform: rotate(7deg); background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,0.55) 5px 10px), var(--mint); }
+
+.auth-greet {
+  font-family: var(--font-en-hand);
+  font-size: 18px;
+  color: var(--pink-dd);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.auth-field { margin-bottom: 12px; }
+.auth-field label {
+  display: block;
+  font-family: var(--font-en-hand);
+  font-size: 16px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.auth-field input, .auth-field textarea {
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  border: 0; outline: none;
+  border-bottom: 1.2px dashed rgba(180, 140, 90, 0.55);
+  font-family: var(--font-zh-hand);
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0 6px;
+  letter-spacing: 0.04em;
+}
+.auth-field input::placeholder, .auth-field textarea::placeholder {
+  color: rgba(138, 116, 96, 0.45);
+  font-style: italic;
+  font-size: 13px;
+}
+.auth-field textarea { resize: none; min-height: 38px; }
+.auth-field.invalid input, .auth-field.invalid textarea { border-bottom-color: var(--pink-dd); }
+.auth-field-error {
+  font-family: var(--font-en-hand);
+  font-size: 14px;
+  color: var(--pink-dd);
+  margin-top: 2px;
+  min-height: 14px;
+}
+
+/* Avatar sticker picker (register) */
+.avatar-picker .ap-label {
+  font-family: var(--font-en-hand);
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.avatar-grid {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.avatar-chip {
+  appearance: none; border: 0; cursor: pointer;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  border: 1.5px dashed rgba(180, 140, 90, 0.55);
+  display: grid; place-items: center;
+  font-size: 18px;
+  color: #fff;
+  font-family: var(--font-en-hand);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.avatar-chip:nth-child(2n)   { background: linear-gradient(135deg, var(--mint), var(--sky)); }
+.avatar-chip:nth-child(3n)   { background: linear-gradient(135deg, var(--lilac), var(--pink)); }
+.avatar-chip:nth-child(4n)   { background: linear-gradient(135deg, var(--yellow), var(--mint)); }
+.avatar-chip:nth-child(5n)   { background: linear-gradient(135deg, var(--sky), var(--lilac)); }
+.avatar-chip.active {
+  transform: scale(1.12) rotate(-6deg);
+  border: 2px solid var(--pink-dd);
+  box-shadow: 0 4px 10px rgba(217, 122, 142, 0.30);
+}
+
+/* Submit button area */
+.auth-submit {
+  margin-top: 14px;
+  display: flex; gap: 10px;
+}
+.auth-submit .btn { flex: 1; padding: 13px 16px; font-size: 14px; }
+.auth-switch {
+  margin-top: 12px;
+  text-align: center;
+  font-family: var(--font-zh-hand);
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.10em;
+}
+.auth-switch a {
+  font-family: var(--font-en-hand);
+  font-size: 16px;
+  color: var(--pink-dd);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 3px;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+/* Register: stack fields tighter */
+.auth-letter.register-letter { padding: 22px 18px 16px; }
+.auth-letter.register-letter .auth-field { margin-bottom: 9px; }
+
+/* ============ 好友页 · 顶级页面布局 ============ */
+.mine-tape.friends-tape {
+  background: repeating-linear-gradient(45deg, transparent 0 6px, rgba(255,255,255,0.5) 6px 12px), var(--lilac);
+}
+
+/* Add-friend big card (looks like a letter with tape) */
+.friends-add-card {
+  position: relative;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px 14px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 24px, var(--paper-line) 24px 25px),
+    var(--paper);
+  border: 1.2px solid rgba(180, 140, 90, 0.35);
+  border-radius: 6px;
+  box-shadow: 2px 4px 0 rgba(180, 140, 90, 0.18);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .25s ease;
+  margin: 12px 0 18px;
+  transform: rotate(-0.5deg);
+}
+.friends-add-card:hover { transform: rotate(-0.5deg) translateY(-2px); box-shadow: 2px 6px 0 rgba(180, 140, 90, 0.20); }
+.friends-add-card:active { transform: rotate(-0.5deg) translateY(0); }
+.friends-add-card .fac-tape {
+  position: absolute; top: -8px; left: 30px;
+  width: 70px; height: 14px;
+  background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,0.55) 5px 10px), var(--pink);
+  opacity: 0.88;
+  transform: rotate(-3deg);
+  border-radius: 1px;
+}
+.friends-add-card .fac-ico {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-size: 22px;
+  color: #fff;
+  font-family: var(--font-en-hand);
+  border: 2px dashed #fff;
+  box-shadow: 0 3px 8px rgba(217, 122, 142, 0.22);
+}
+.friends-add-card .fac-text { flex: 1; }
+.friends-add-card .fac-title {
+  font-family: var(--font-zh-hand);
+  font-size: 16px;
+  letter-spacing: 0.10em;
+  color: var(--ink);
+}
+.friends-add-card .fac-sub {
+  font-family: var(--font-en-hand);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+.friends-add-card .fac-arrow {
+  font-size: 26px;
+  color: var(--ink-light);
+  margin-right: 4px;
+}
+
+/* Blocks */
+.friends-block { margin-bottom: 18px; }
+.friends-block-title {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+  padding: 0 4px;
+  font-family: var(--font-zh-hand);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+.friends-block-title > span:first-child {
+  color: var(--pink-dd);
+  font-size: 14px;
+}
+.friends-block-title .fbt-count {
+  margin-left: auto;
+  font-family: var(--font-en-hand);
+  font-size: 14px;
+  background: rgba(255, 250, 240, 0.7);
+  border: 1.2px dashed var(--ink-light);
+  border-radius: 999px;
+  padding: 1px 9px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+
+.friends-list { display: flex; flex-direction: column; gap: 10px; }
+
+.friend-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1.2px solid rgba(180, 140, 90, 0.30);
+  border-radius: 6px;
+  box-shadow: 2px 3px 0 rgba(180, 140, 90, 0.12);
+}
+.friend-row.invite {
+  background: rgba(255, 211, 221, 0.20);
+  border: 1.2px dashed var(--pink-d);
+  box-shadow: 2px 3px 0 rgba(217, 122, 142, 0.12);
+}
+.friend-row.pending {
+  background: repeating-linear-gradient(135deg, rgba(180, 140, 90, 0.05) 0 6px, transparent 6px 14px), var(--paper);
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.fr-avatar {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-family: var(--font-en-hand);
+  font-size: 20px;
+  color: #fff;
+  border: 2px dashed #fff;
+  box-shadow: 0 2px 5px rgba(180, 140, 90, 0.25);
+}
+.fr-avatar.pending-avatar {
+  background: var(--cream-3);
+  color: var(--ink-light);
+  font-size: 22px;
+}
+
+.fr-info { flex: 1; min-width: 0; }
+.fr-info .fr-name {
+  font-family: var(--font-zh-hand);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fr-info .fr-meta {
+  font-family: var(--font-en-hand);
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fr-info .fr-sig {
+  font-family: var(--font-zh-hand);
+  font-size: 11px;
+  color: var(--ink-light);
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.fr-actions { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; flex-shrink: 0; }
+.fr-btn {
+  appearance: none; cursor: pointer;
+  font-family: var(--font-zh-hand);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.2px dashed var(--ink-light);
+  background: rgba(255, 250, 240, 0.85);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.fr-btn.accept {
+  border: 1.5px solid var(--mint-d);
+  color: var(--mint-d);
+  background: rgba(191, 230, 200, 0.30);
+}
+.fr-btn.ghost {
+  color: var(--ink-soft);
+  border-style: dashed;
+}
+.fr-status {
+  font-family: var(--font-en-hand);
+  font-size: 12px;
+  color: var(--pink-dd);
+  letter-spacing: 0.04em;
+}
+
+.friends-empty {
+  padding: 24px 12px;
+  text-align: center;
+  background: var(--paper);
+  border: 1.2px dashed var(--ink-light);
+  border-radius: 6px;
+  color: var(--ink-soft);
+}
+.friends-empty-ico {
+  font-size: 30px;
+  color: var(--pink-dd);
+  margin-bottom: 8px;
+}
+.friends-empty p {
+  font-family: var(--font-zh-hand);
+  letter-spacing: 0.10em;
+}
+.friends-empty .empty-sub {
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* User strip at top of 我的 */
+.user-strip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 4px;
+  margin: 4px 0 -4px;
+}
+.user-strip .us-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  border: 2px dashed #fff;
+  display: grid; place-items: center;
+  color: #fff;
+  font-family: var(--font-en-hand);
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(217, 122, 142, 0.25);
+  transform: rotate(-6deg);
+}
+.user-strip .us-info { flex: 1; }
+.user-strip .us-name {
+  font-family: var(--font-zh-hand);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.user-strip .us-sig {
+  font-family: var(--font-en-hand);
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+}
+.user-strip .us-logout {
+  appearance: none; cursor: pointer;
+  font-family: var(--font-zh-hand);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1.2px dashed var(--ink-light);
+  background: rgba(255, 250, 240, 0.8);
+  color: var(--ink-soft);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ============ 添加好友弹窗 ============ */
+.add-friend-letter { padding: 24px 22px 18px !important; }
+.add-friend-result {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(191, 230, 200, 0.25);
+  border: 1.2px dashed var(--mint-d);
+  border-radius: 6px;
+  font-family: var(--font-zh-hand);
+  font-size: 13px;
+  color: var(--ink);
+  display: none;
+}
+.add-friend-result.show { display: flex; align-items: center; gap: 10px; }
+.add-friend-result .afr-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  border: 2px dashed #fff;
+  display: grid; place-items: center;
+  color: #fff;
+  font-family: var(--font-en-hand);
+  font-size: 18px;
+}
+.add-friend-result .afr-info { flex: 1; }
+.add-friend-result .afr-name { font-size: 14px; color: var(--ink); letter-spacing: 0.06em; }
+.add-friend-result .afr-mail { font-family: var(--font-en-hand); font-size: 13px; color: var(--ink-soft); }
+
+/* ============ 许愿信纸：寄给 / 实现者 芯片 ============ */
+.recipient-picker, .assignee-picker {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(180, 140, 90, 0.35);
+}
+.recipient-picker-label, .assignee-picker-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-zh-hand);
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: 0.10em;
+  margin-bottom: 8px;
+}
+.recipient-picker-label > span:first-child,
+.assignee-picker-label > span:first-child {
+  font-size: 16px;
+  color: var(--pink-dd);
+}
+.recipient-picker-label .rpl-zh,
+.assignee-picker-label .apl-zh {
+  color: var(--ink);
+  letter-spacing: 0.10em;
+}
+.recipient-chips, .assignee-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.recipient-chip, .assignee-chip {
+  appearance: none; border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-zh-hand);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.7);
+  border: 1.2px dashed var(--ink-light);
+  color: var(--ink);
+  transition: all .2s ease;
+}
+.recipient-chip .rc-avatar, .assignee-chip .ac-avatar {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-family: var(--font-en-hand);
+  font-size: 13px;
+  color: #fff;
+  border: 1.5px dashed #fff;
+}
+.recipient-chip:nth-child(2n) .rc-avatar,
+.assignee-chip:nth-child(2n) .ac-avatar { background: linear-gradient(135deg, var(--mint), var(--sky)); }
+.recipient-chip:nth-child(3n) .rc-avatar,
+.assignee-chip:nth-child(3n) .ac-avatar { background: linear-gradient(135deg, var(--lilac), var(--pink)); }
+.recipient-chip:nth-child(4n) .rc-avatar,
+.assignee-chip:nth-child(4n) .ac-avatar { background: linear-gradient(135deg, var(--yellow), var(--mint)); }
+.recipient-chip.active, .assignee-chip.active {
+  border: 1.5px solid var(--pink-dd);
+  background: linear-gradient(135deg, rgba(255, 211, 221, 0.7) 0%, rgba(255, 233, 168, 0.7) 100%);
+  box-shadow: 0 2px 5px rgba(217, 122, 142, 0.20);
+}
+.recipient-chip[data-id="self"] .rc-avatar,
+.assignee-chip[data-id="self"] .ac-avatar {
+  background: linear-gradient(135deg, var(--lilac), var(--sky));
+}
+
+/* ============ 愿望卡片 — 好友头像贴纸 ============ */
+.wc-friend-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(216, 213, 238, 0.32);
+  border: 1.2px dashed var(--lilac-d);
+  border-radius: 999px;
+  padding: 2px 10px 2px 3px;
+  font-family: var(--font-zh-hand);
+  font-size: 11px;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wc-friend-tag .wft-avatar {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-family: var(--font-en-hand);
+  font-size: 11px;
+  color: #fff;
+  border: 1px dashed #fff;
+}
+.wc-friend-tag .wft-role {
+  font-family: var(--font-en-hand);
+  font-size: 12px;
+  color: var(--pink-dd);
+  letter-spacing: 0.02em;
+  margin-right: 2px;
+}
+.wc-friend-tag.assignee { background: rgba(191, 230, 200, 0.28); border-color: var(--mint-d); }
+.wc-friend-tag.assignee .wft-avatar { background: linear-gradient(135deg, var(--mint), var(--sky)); }
+.wc-friend-tag.assignee .wft-role { color: var(--mint-d); }
+.wc-friend-tag.from { background: rgba(255, 211, 221, 0.28); border-color: var(--pink-d); }
+.wc-friend-tag.from .wft-role { color: var(--pink-dd); }
+
+.wc-friend-row {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-top: 6px;
+}
+
+/* On envelope card too */
+.we-friend-tag {
+  position: absolute;
+  top: 8px; left: 14px;
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255, 250, 240, 0.92);
+  border: 1.2px dashed rgba(120, 90, 50, 0.40);
+  border-radius: 999px;
+  padding: 2px 8px 2px 2px;
+  font-family: var(--font-zh-hand);
+  font-size: 11px;
+  color: #5a3e22;
+  z-index: 4;
+  box-shadow: 0 2px 5px rgba(120, 90, 50, 0.18);
+}
+.we-friend-tag .wft-avatar {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-family: var(--font-en-hand);
+  font-size: 11px;
+  color: #fff;
+  border: 1px dashed #fff;
+}
+.we-friend-tag .wft-role {
+  font-family: var(--font-en-hand);
+  font-size: 12px;
+  color: #8a6a3e;
+  margin-right: 2px;
+}
+
+/* Show modal: friend tag row */
+.show-friend-row {
+  display: flex; gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.show-friend-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-zh-hand);
+  font-size: 12px;
+  color: var(--ink);
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  background: rgba(216, 213, 238, 0.40);
+  border: 1.2px dashed var(--lilac-d);
+}
+.show-friend-pill .sfp-avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--yellow));
+  display: grid; place-items: center;
+  font-family: var(--font-en-hand);
+  font-size: 12px;
+  color: #fff;
+  border: 1px dashed #fff;
+}
+.show-friend-pill .sfp-role {
+  font-family: var(--font-en-hand);
+  font-size: 13px;
+  color: var(--ink-soft);
+}

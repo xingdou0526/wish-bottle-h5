@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>愿望瓶 · 手账</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&family=Gaegu:wght@400;700&family=Long+Cang&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="auth.css">
+</head>
+<body class="auth-locked">
+  <div class="page-bg" aria-hidden="true"></div>
+
+  <div class="phone-shell" id="phone-shell">
+    <!-- Status bar -->
+    <div class="status-bar" aria-hidden="true">
+      <span class="sb-time" id="sb-time">9:41</span>
+      <span class="sb-notch"></span>
+      <span class="sb-right">
+        <svg viewBox="0 0 18 12" width="17" height="11"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.6"/><rect x="5" y="6" width="3" height="6" rx="0.6"/><rect x="10" y="3" width="3" height="9" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6"/></g></svg>
+        <svg viewBox="0 0 16 12" width="15" height="11"><path d="M8 11 Q4 7 1.5 5 A9 9 0 0 1 14.5 5 Q12 7 8 11 Z M8 3.5 A2.4 2.4 0 0 1 10.4 5.9 Q9.2 7 8 8.2 Q6.8 7 5.6 5.9 A2.4 2.4 0 0 1 8 3.5 Z" fill="currentColor"/></svg>
+        <span class="sb-batt"><span class="sb-batt-fill"></span></span>
+      </span>
+    </div>
+
+    <!-- Cream paper background + decorations -->
+    <div class="paper-grid" aria-hidden="true"></div>
+    <div class="paper-decor" aria-hidden="true">
+      <!-- Washi tape pieces -->
+      <span class="tape tape-1"></span>
+      <span class="tape tape-2"></span>
+      <span class="tape tape-3"></span>
+      <!-- Doodles -->
+      <svg class="doodle doodle-cloud" viewBox="0 0 60 30">
+        <path d="M10 22 Q4 22 4 16 Q4 10 12 11 Q14 4 22 5 Q30 3 33 10 Q42 8 44 16 Q50 16 50 22 Z" fill="none" stroke="#f5c8d3" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <svg class="doodle doodle-heart" viewBox="0 0 30 28">
+        <path d="M15 24 C 5 18, 2 12, 6 7 C 10 3, 14 6, 15 10 C 16 6, 20 3, 24 7 C 28 12, 25 18, 15 24 Z" fill="#ffd3dd" stroke="#e89aac" stroke-width="1.2"/>
+      </svg>
+      <svg class="doodle doodle-flower" viewBox="0 0 40 40">
+        <g fill="#ffe9a8" stroke="#e0bf5c" stroke-width="1.2">
+          <ellipse cx="20" cy="9" rx="5" ry="7"/>
+          <ellipse cx="31" cy="20" rx="7" ry="5"/>
+          <ellipse cx="20" cy="31" rx="5" ry="7"/>
+          <ellipse cx="9" cy="20" rx="7" ry="5"/>
+        </g>
+        <circle cx="20" cy="20" r="4.5" fill="#ff9eb1"/>
+      </svg>
+      <svg class="doodle doodle-star" viewBox="0 0 24 24">
+        <polygon points="12,2 14.5,9 22,9 16,13.5 18.5,21 12,16.5 5.5,21 8,13.5 2,9 9.5,9" fill="#bfe6c8" stroke="#7fb892" stroke-width="1"/>
+      </svg>
+      <svg class="doodle doodle-sparkle" viewBox="0 0 20 20">
+        <path d="M10 0 L11.5 8.5 L20 10 L11.5 11.5 L10 20 L8.5 11.5 L0 10 L8.5 8.5 Z" fill="#c8e4ec" stroke="#7fa9b8" stroke-width="0.8"/>
+      </svg>
+      <svg class="doodle doodle-arrow" viewBox="0 0 60 40">
+        <path d="M5 32 Q 20 8 38 16 Q 50 22 54 14" fill="none" stroke="#b8a8d8" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 3"/>
+        <path d="M48 8 L 56 14 L 52 22" fill="none" stroke="#b8a8d8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <!-- Dots -->
+      <span class="dot dot-1"></span>
+      <span class="dot dot-2"></span>
+      <span class="dot dot-3"></span>
+      <span class="dot dot-4"></span>
+      <span class="dot dot-5"></span>
+    </div>
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">✿</span>
+        <span class="brand-name">愿望瓶</span>
+        <span class="brand-sub">wishes</span>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="bottle" role="tab">瓶子</button>
+        <button class="tab" data-view="mine" role="tab">我的</button>
+        <button class="tab" data-view="friends" role="tab">好友</button>
+      </nav>
+    </header>
+
+    <!-- ============ Auth stage (welcome / login / register) ============ -->
+    <div class="auth-stage" id="auth-stage"></div>
+
+    <main>
+      <!-- ============ 瓶子页 ============ -->
+      <section id="bottle-view" class="view active">
+        <div class="stage-wrap">
+          <!-- Title sticker -->
+          <div class="page-title">
+            <span class="pt-tape"></span>
+            <span class="pt-main">My Wishes ✦</span>
+            <span class="pt-date" id="page-today">—</span>
+          </div>
+
+          <div class="stage" id="stage">
+            <svg class="bottle-svg" viewBox="0 0 800 760" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <linearGradient id="glass-body" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"  stop-color="rgba(255,255,255,0.20)"/>
+                  <stop offset="14%" stop-color="rgba(255,255,255,0.55)"/>
+                  <stop offset="32%" stop-color="rgba(255,255,255,0.15)"/>
+                  <stop offset="62%" stop-color="rgba(255,255,255,0.12)"/>
+                  <stop offset="82%" stop-color="rgba(255,255,255,0.48)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.18)"/>
+                </linearGradient>
+                <linearGradient id="glass-shade" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(200,210,220,0)"/>
+                  <stop offset="100%" stop-color="rgba(180,195,210,0.18)"/>
+                </linearGradient>
+                <radialGradient id="bottle-shadow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(180,160,140,0.30)"/>
+                  <stop offset="100%" stop-color="rgba(180,160,140,0)"/>
+                </radialGradient>
+                <linearGradient id="rim-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.40)"/>
+                </linearGradient>
+              </defs>
+
+              <ellipse cx="400" cy="710" rx="220" ry="20" fill="url(#bottle-shadow)"/>
+
+              <g id="bottle-group">
+                <path id="bottle-shape"
+                  d="M 246 142 L 246 130 Q 246 118, 258 116 L 542 116 Q 554 118, 554 130 L 554 142 L 590 210 L 590 600 Q 590 686, 504 686 L 296 686 Q 210 686, 210 600 L 210 210 Z"
+                  fill="url(#glass-body)"
+                  stroke="#c8b8a8"
+                  stroke-width="2.2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M 246 142 L 590 210 L 590 600 Q 590 686, 504 686 L 296 686 Q 210 686, 210 600 L 210 210 L 554 142 Z"
+                  fill="url(#glass-shade)"
+                  opacity="0.5"
+                />
+                <ellipse cx="400" cy="116" rx="148" ry="12" fill="url(#rim-grad)" stroke="#c8b8a8" stroke-width="1.6"/>
+                <ellipse cx="400" cy="124" rx="148" ry="6" fill="none" stroke="rgba(200,180,160,0.45)" stroke-width="1"/>
+
+                <!-- subtle highlight stripes -->
+                <path d="M 250 220 Q 245 420, 254 600" stroke="rgba(255,255,255,0.85)" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M 263 240 Q 258 420, 266 580" stroke="rgba(255,255,255,0.40)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M 550 230 Q 558 420, 546 600" stroke="rgba(255,255,255,0.55)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+                <!-- Cute tag with bow -->
+                <g id="tag" transform="translate(564 150)">
+                  <path d="M -22 -34 Q -28 -28, -22 -22 Q -16 -28, -22 -34 Z M 22 -34 Q 28 -28, 22 -22 Q 16 -28, 22 -34 Z" fill="#ffd3dd" stroke="#e89aac" stroke-width="1"/>
+                  <circle cx="0" cy="-28" r="4" fill="#e89aac"/>
+                  <line x1="0" y1="-24" x2="0" y2="-2" stroke="#b89880" stroke-width="1"/>
+                  <g transform="rotate(8)">
+                    <rect x="-22" y="-2" width="44" height="22" rx="3" fill="#fff9e8" stroke="#c8b090" stroke-width="0.9"/>
+                    <line x1="-16" y1="6" x2="16" y2="6" stroke="#d8c0a0" stroke-width="0.6"/>
+                    <line x1="-16" y1="12" x2="10" y2="12" stroke="#d8c0a0" stroke-width="0.6"/>
+                    <text x="0" y="16" text-anchor="middle" font-family="Long Cang, ZCOOL XiaoWei, serif" font-size="11" fill="#a06848">願</text>
+                  </g>
+                </g>
+              </g>
+            </svg>
+
+            <canvas class="stars-canvas" id="stars-canvas" width="800" height="760"></canvas>
+            <div class="bottle-glow" aria-hidden="true"></div>
+          </div>
+
+          <p class="hint">用手指划过瓶子 · 星星会跟着晃 ✿</p>
+
+          <div class="actions">
+            <button class="btn btn-ghost" id="btn-shake">
+              <span class="btn-ico">✿</span>
+              <span>摇一摇</span>
+            </button>
+            <button class="btn btn-primary" id="btn-wish">
+              <span class="btn-ico">✎</span>
+              <span>许个愿</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 我的页 ============ -->
+      <section id="mine-view" class="view">
+        <div class="mine-head">
+          <span class="mine-tape"></span>
+          <h2>许过的愿</h2>
+          <p class="mine-sub">My Little Wishes · 每一颗都是一个未来</p>
+        </div>
+        <div class="sub-tabs" role="tablist">
+          <button class="sub-tab active" data-status="pending" role="tab">未实现 <span class="count" id="count-pending">0</span></button>
+          <button class="sub-tab" data-status="sealed" role="tab">未拆封 <span class="count" id="count-sealed">0</span></button>
+          <button class="sub-tab" data-status="done" role="tab">已成真 <span class="count" id="count-done">0</span></button>
+          <button class="sub-tab" data-status="friend" role="tab">好友 <span class="count" id="count-friend">0</span></button>
+        </div>
+        <div class="wish-list" id="wish-list"></div>
+        <div class="empty" id="wish-empty" hidden>
+          <div class="empty-ico">✿</div>
+          <p>还没有许过愿哦</p>
+          <p class="empty-sub">回到瓶子页 · 把心愿投进去吧</p>
+        </div>
+      </section>
+
+      <!-- ============ 好友页 ============ -->
+      <section id="friends-view" class="view">
+        <div id="user-strip-mount"></div>
+        <div class="mine-head">
+          <span class="mine-tape friends-tape"></span>
+          <h2>我的好友</h2>
+          <p class="mine-sub">friends · 一起许愿吧 ♡</p>
+        </div>
+        <div id="friends-mount"></div>
+      </section>
+    </main>
+
+    <div class="home-bar" aria-hidden="true"></div>
+  </div>
+
+  <!-- ============ 许愿弹窗 ============ -->
+  <div class="sheet-modal" id="wish-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-write" role="dialog" aria-modal="true">
+        <span class="letter-tape letter-tape-l"></span>
+        <span class="letter-tape letter-tape-r"></span>
+        <div class="letter-sticker letter-sticker-pink"><span>♡</span></div>
+        <div class="letter-header">
+          <span class="letter-date" id="letter-date">—</span>
+          <span class="letter-title">Dear me ✦</span>
+        </div>
+        <div class="letter-lined">
+          <textarea
+            id="wish-input"
+            class="letter-input"
+            maxlength="140"
+            placeholder="今天想许什么愿……"
+          ></textarea>
+          <div class="char-count"><span id="char-count">0</span> / 140</div>
+        </div>
+
+        <!-- Time-seal picker -->
+        <div class="seal-picker" id="seal-picker">
+          <div class="seal-picker-label"><span>✉</span><span>寄到何时</span></div>
+          <div class="seal-chips" role="radiogroup">
+            <button class="seal-chip active" data-seal="now" type="button">现在</button>
+            <button class="seal-chip" data-seal="1m" type="button">一个月后</button>
+            <button class="seal-chip" data-seal="3m" type="button">三个月后</button>
+            <button class="seal-chip" data-seal="6m" type="button">半年后</button>
+            <button class="seal-chip" data-seal="1y" type="button">一年后</button>
+            <button class="seal-chip" data-seal="newyear" type="button">下一个新年</button>
+            <button class="seal-chip" data-seal="birthday" type="button">下一个生日</button>
+            <button class="seal-chip" data-seal="custom" type="button">自定义</button>
+          </div>
+          <div class="seal-extras" id="seal-extras" hidden>
+            <div class="seal-extra-row" id="seal-extra-custom" hidden>
+              <label>多少天后开启？</label>
+              <input type="number" id="seal-custom-days" min="1" max="3650" placeholder="天数" />
+            </div>
+            <div class="seal-extra-row" id="seal-extra-birthday" hidden>
+              <label>你的生日 (MM-DD)</label>
+              <input type="text" id="seal-birthday-input" placeholder="例如 06-15" maxlength="5" />
+            </div>
+          </div>
+          <div class="seal-hint" id="seal-hint">立即可见</div>
+        </div>
+
+        <!-- Sticker picker -->
+        <div class="sticker-picker" id="sticker-picker">
+          <div class="seal-picker-label"><span>♡</span><span>贴一张贴纸</span></div>
+          <div class="sticker-chips" role="radiogroup">
+            <button class="sticker-chip active" data-sticker="" type="button" title="无"><span class="sk-empty">无</span></button>
+            <button class="sticker-chip" data-sticker="♡" type="button"><span>♡</span></button>
+            <button class="sticker-chip" data-sticker="✿" type="button"><span>✿</span></button>
+            <button class="sticker-chip" data-sticker="★" type="button"><span>★</span></button>
+            <button class="sticker-chip" data-sticker="☁" type="button"><span>☁</span></button>
+            <button class="sticker-chip" data-sticker="✦" type="button"><span>✦</span></button>
+            <button class="sticker-chip" data-sticker="☀" type="button"><span>☀</span></button>
+            <button class="sticker-chip" data-sticker="☾" type="button"><span>☾</span></button>
+          </div>
+        </div>
+
+        <!-- Recipient picker (寄给 To) -->
+        <div class="recipient-picker">
+          <div class="recipient-picker-label">
+            <span>✉</span><span class="rpl-zh">寄给</span>
+          </div>
+          <div class="recipient-chips" id="recipient-chips" role="radiogroup"></div>
+        </div>
+
+        <!-- Assignee picker (希望谁实现) -->
+        <div class="assignee-picker">
+          <div class="assignee-picker-label">
+            <span>✨</span><span class="apl-zh">希望谁实现</span>
+          </div>
+          <div class="assignee-chips" id="assignee-chips" role="radiogroup"></div>
+        </div>
+
+        <div class="letter-footer">
+          <span class="signature">— love, me ♡</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-cancel">放下</button>
+        <button class="btn btn-primary" id="btn-confirm">投进瓶子 ✿</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 添加好友弹窗 ============ -->
+  <div class="sheet-modal" id="friend-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter add-friend-letter" role="dialog" aria-modal="true">
+        <span class="letter-tape letter-tape-l"></span>
+        <span class="letter-tape letter-tape-r"></span>
+        <div class="letter-sticker letter-sticker-mint"><span>✉</span></div>
+        <div class="letter-header">
+          <span class="letter-date">邀请</span>
+          <span class="letter-title">加一个朋友 ♦</span>
+        </div>
+        <div class="auth-field" data-field="email" style="margin-bottom: 4px;">
+          <label>朋友的邮箱</label>
+          <input type="email" id="friend-email" placeholder="yuzu@wish.bottle / abao@wish.bottle / mimi@wish.bottle" autocomplete="off" />
+          <div class="auth-field-error" id="friend-add-error"></div>
+        </div>
+        <div class="add-friend-result" id="friend-add-result"></div>
+        <div class="letter-footer" style="margin-top: 10px;">
+          <span class="signature">— with love ♡</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-friend-cancel">放下</button>
+        <button class="btn btn-primary" id="btn-friend-add">邀请他 / 她 ✉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 抽中愿望弹窗 ============ -->
+  <div class="sheet-modal" id="show-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-show" role="dialog" aria-modal="true">
+        <span class="letter-tape letter-tape-l"></span>
+        <span class="letter-tape letter-tape-r"></span>
+        <div class="letter-sticker letter-sticker-mint"><span>✿</span></div>
+        <div class="letter-header">
+          <span class="letter-date" id="show-date">—</span>
+          <span class="letter-title">来自瓶中的回信</span>
+        </div>
+        <div class="letter-lined">
+          <div class="show-friend-row" id="show-friend-row" hidden></div>
+          <div class="letter-show-text" id="show-text">…</div>
+          <div class="letter-note-section" id="show-note-section" hidden>
+            <div class="note-divider"><span>♡ 实现的故事 ♡</span></div>
+            <div class="letter-note" id="show-note"></div>
+            <div class="letter-note-date" id="show-note-date"></div>
+          </div>
+        </div>
+        <div class="letter-footer">
+          <span class="signature" id="show-status">— 还在等待中</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-show-close">放回瓶中</button>
+        <button class="btn btn-primary" id="btn-show-done">已成真 ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 完成备注弹窗 ============ -->
+  <div class="sheet-modal" id="done-modal" hidden>
+    <div class="sheet-mask"></div>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="letter letter-note-write" role="dialog" aria-modal="true">
+        <span class="letter-tape letter-tape-l"></span>
+        <span class="letter-tape letter-tape-r"></span>
+        <div class="letter-sticker letter-sticker-yellow"><span>★</span></div>
+        <div class="letter-header">
+          <span class="letter-date" id="done-date">—</span>
+          <span class="letter-title">愿望成真了 ♡</span>
+        </div>
+        <div class="note-original">
+          <span class="note-original-label">当时的愿望：</span>
+          <span class="note-original-text" id="done-original">—</span>
+        </div>
+        <div class="letter-lined">
+          <textarea
+            id="done-note-input"
+            class="letter-input letter-input-sm"
+            maxlength="200"
+            placeholder="它是怎么实现的呢？留点什么给未来的自己看……"
+          ></textarea>
+          <div class="char-count"><span id="done-char-count">0</span> / 200</div>
+        </div>
+        <div class="letter-footer">
+          <span class="signature">— this moment ♡</span>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button class="btn btn-ghost" id="btn-done-skip">先跳过</button>
+        <button class="btn btn-primary" id="btn-done-save">把这一刻收好 ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 拆信仪式 ============ -->
+  <div class="envelope-open-modal" id="envelope-modal" hidden>
+    <div class="envelope-open-mask"></div>
+    <div class="envelope-open-stage" id="envelope-stage">
+      <div class="big-envelope" id="big-envelope">
+        <div class="be-flap" id="be-flap"></div>
+        <div class="be-body"></div>
+        <div class="be-info">
+          <div class="be-label">寄给未来的自己</div>
+          <div class="be-date" id="be-date">2027.05.13</div>
+          <div class="be-cd" id="be-cd">已到达</div>
+        </div>
+        <div class="be-wax" id="be-wax">
+          <span>封</span>
+        </div>
+      </div>
+      <p class="envelope-hint" id="envelope-hint">点击信封 · 撕开封蜡</p>
+      <button class="envelope-close" id="envelope-close">放回去</button>
+    </div>
+  </div>
+
+  <!-- ============ 如愿盖章动画 overlay ============ -->
+  <div class="stamp-overlay" id="stamp-overlay" hidden>
+    <div class="as-wish-stamp" id="as-wish-stamp">
+      <svg viewBox="-50 -50 100 100" width="100%" height="100%">
+        <defs>
+          <radialGradient id="stamp-wash" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="rgba(217,122,142,0.85)"/>
+            <stop offset="60%" stop-color="rgba(217,122,142,0.55)"/>
+            <stop offset="100%" stop-color="rgba(217,122,142,0.15)"/>
+          </radialGradient>
+        </defs>
+        <!-- watercolor wash -->
+        <circle cx="-3" cy="2" r="46" fill="url(#stamp-wash)" opacity="0.65"/>
+        <circle cx="4" cy="-2" r="42" fill="rgba(217,122,142,0.30)"/>
+        <!-- outer ring (irregular) -->
+        <path d="M 40 -3 Q 42 22, 22 38 Q 0 44, -24 36 Q -42 20, -40 -4 Q -38 -28, -16 -40 Q 8 -42, 28 -28 Q 42 -16, 40 -3 Z"
+              fill="none" stroke="#c4587a" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M 35 -4 Q 37 18, 19 33 Q 0 38, -20 31 Q -36 17, -34 -5 Q -32 -23, -14 -34 Q 6 -36, 24 -24 Q 37 -14, 35 -4 Z"
+              fill="none" stroke="#d97a8e" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- inner dotted ring -->
+        <g fill="#c4587a">
+          <circle cx="28" cy="0" r="0.9"/><circle cx="20" cy="20" r="0.9"/>
+          <circle cx="0" cy="28" r="0.9"/><circle cx="-20" cy="20" r="0.9"/>
+          <circle cx="-28" cy="0" r="0.9"/><circle cx="-20" cy="-20" r="0.9"/>
+          <circle cx="0" cy="-28" r="0.9"/><circle cx="20" cy="-20" r="0.9"/>
+        </g>
+        <!-- text 如愿 vertical -->
+        <text x="0" y="-2" text-anchor="middle" font-family="Long Cang, serif" font-size="22" fill="#a23a5a" font-weight="700">如</text>
+        <text x="0" y="22" text-anchor="middle" font-family="Long Cang, serif" font-size="22" fill="#a23a5a" font-weight="700">願</text>
+        <!-- bottom heart -->
+        <path d="M 0 36 C -4 32, -6 30, -3 28 C -1 27, 0 28, 0 30 C 0 28, 1 27, 3 28 C 6 30, 4 32, 0 36 Z" fill="#c4587a"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <script src="physics.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+
+  <!-- ============ Tweaks panel ============ -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks.jsx"></script>
+</body>
+</html>
