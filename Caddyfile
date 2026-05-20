@@ -1,16 +1,11 @@
-# Caddy 配置：{$DOMAIN} 来自环境变量
-# - 通过 DNS-01 验证向 Let's Encrypt 申请并自动续期 HTTPS 证书
-#   （不需要 Let's Encrypt 反向连入服务器，绕开未备案域名的入站拦截）
-{$DOMAIN} {
-	encode gzip
+# Caddy 配置
+# - 站点逻辑抽成 (app) 片段，HTTPS 域名入口和临时 IP 入口复用
+# - {$DOMAIN} 走 DNS-01 验证申请并自动续期 HTTPS 证书
+# - :8080 是未备案期间用「服务器IP:8080」临时自测的 HTTP 入口
 
-	# 用腾讯云 API 密钥走 DNS-01 验证申请证书
-	tls {
-		dns tencentcloud {
-			secret_id {env.TENCENTCLOUD_SECRET_ID}
-			secret_key {env.TENCENTCLOUD_SECRET_KEY}
-		}
-	}
+# 公共站点逻辑：反代 /api + 托管 React 单页应用
+(app) {
+	encode gzip
 
 	# 所有 /api/* 请求反向代理到 api 容器
 	handle /api/* {
@@ -22,5 +17,24 @@
 		root * /srv
 		try_files {path} /index.html
 		file_server
+	}
+}
+
+# 临时入口：http://服务器公网IP:8080
+# 未备案域名的 80/443 会被腾讯云拦截，非标准端口不受影响
+:8080 {
+	import app
+}
+
+# 正式入口：https://{$DOMAIN}（需域名已备案才能对外访问）
+{$DOMAIN} {
+	import app
+
+	# 用腾讯云 API 密钥走 DNS-01 验证申请证书
+	tls {
+		dns tencentcloud {
+			secret_id {env.TENCENTCLOUD_SECRET_ID}
+			secret_key {env.TENCENTCLOUD_SECRET_KEY}
+		}
 	}
 }
