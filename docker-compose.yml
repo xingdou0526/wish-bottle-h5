@@ -43,6 +43,8 @@ services:
       - api
     environment:
       DOMAIN: ${DOMAIN}
+      TENCENTCLOUD_SECRET_ID: ${TENCENTCLOUD_SECRET_ID}
+      TENCENTCLOUD_SECRET_KEY: ${TENCENTCLOUD_SECRET_KEY}
     ports:
       - '80:80'
       - '443:443'
